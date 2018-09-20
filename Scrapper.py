@@ -123,7 +123,6 @@ def main():
                 print "Posts sent"
             except:  
                 print 'Something went wrong...'
-            POSTS.extend(new_posts)
         time.sleep(900)  
 
 if __name__ == "__main__":
