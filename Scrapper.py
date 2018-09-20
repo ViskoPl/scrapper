@@ -1,8 +1,9 @@
-import urllib2
-from bs4 import BeautifulSoup
-import time
-import smtplib
 import sys
+import urllib2
+import smtplib
+import time
+import datetime
+from bs4 import BeautifulSoup
 from email.utils import COMMASPACE, formatdate
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -10,11 +11,10 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 
 
-EMAILS = ['viskofrina@gmail.com', 'eduard.edi.jerkovic', 'housebatarello.booking'] #Your emails to send notifications about new posts
-POSTS = []
+EMAILS = [] #Your emails to send notifications about new posts ['example@safsdf.com', 'example2@sadada.com']
 FILE = open('log.txt', 'r+')
-username_email = "lala75614@gmail.com" #Create a bot on gmail email to send email
-password = 'suchno1234' #Password for that email
+username_email = "" #Create a bot on gmail email to send email
+password = '' #Password for that email
 class Post:
 
    def __init__(self, link="", title="", description_main='', published_date='', price_eur='', price_hrk='', post_id = ""):
@@ -43,13 +43,11 @@ def fill_new_posts(posts):
     FILE.seek(0)
     ids_date = FILE.read().split('\n')
     ids_date = [x for x in ids_date if x]
-    for x in ids_date:
-        print x
     for post in posts:
             new_post = create_post(post)
             if new_post == None:
                 continue
-            if len(ids_date) == 0 or all((new_post.post_id != item.split('-')[0] and new_post.published_date != item.split('-')[1].split('|')[0]) for item in ids_date):
+            if len(ids_date) == 0 or all((new_post.post_id != item.split('-')[0] or new_post.published_date != item.split('-')[1].split('|')[0]) for item in ids_date):
                     try:
                         FILE.write(new_post.post_id + '-' + new_post.published_date + '| title:' + new_post.title + '\n')
                     except:
@@ -95,25 +93,7 @@ def main():
         posts = soup.findAll('li', attrs={'class':'EntityList-item'})
         print "Oppening soup ---------------"
         new_posts = fill_new_posts(posts)
-        # time.sleep(60)
-        # for i in range(2,3):
-        #     url = "https://www.njuskalo.hr/iznajmljivanje-stanova/zagreb?price%5Bmax%5D=550&mainArea%5Bmin%5D=40&flatTypeId=183&page={}".format(i)
-        #     page = urllib2.urlopen(url)
-        #     print "Sending requset to the site----------------{}.time".format(i)
-        #     soup = BeautifulSoup(page, 'html.parser')
-        #     posts = soup.findAll('li', attrs= {'class':'EntityList-item'})
-        #     for post in posts:
-        #         print post
-        #         link = post.find('a', attrs= {'class':'link'})['href']
-        #         title = post.find('a', attrs= {'class':'link'}).text()
-        #         description = post.find('div', attrs= {'class': 'entity-description-main'}).text()
-        #         date = post.find('time', attrs= {'class':'date date--full'}).text()
-        #         price_hrk = post.find('strong', attrs= {'class':'price price--hrk'}).text()
-        #         price_eur = post.find('strong', attrs= {'class':'price price--eur'})
-        #         new_post = Post(link, title, description, date, price_eur, price_hrk)
-        #         if all(new_post.title != item.title for item in POSTS) or len(POSTS) == 0:
-        #             new_posts.append(post)      
-        #     time.sleep(60)
+        print "Issuing a requst at {}".format(datetime.datetime.now())
         if new_posts:
             try:  
                 server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
