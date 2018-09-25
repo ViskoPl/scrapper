@@ -11,10 +11,11 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 
 
-EMAILS = [] #Your emails to send notifications about new posts ['example@safsdf.com', 'example2@sadada.com']
+EMAILS = ['viskofrina@gmail.com', 'eduard.edi.jerkovic@gmail.com', 'housebatarello.booking@gmail.com']
+POSTS = []
 FILE = open('log.txt', 'r+')
-username_email = "" #Create a bot on gmail email to send email
-password = '' #Password for that email
+username_email = 'lala75614@gmail.com'
+password = 'suchno1234'
 class Post:
 
    def __init__(self, link="", title="", description_main='', published_date='', price_eur='', price_hrk='', post_id = ""):
@@ -64,7 +65,7 @@ def create_post(post):
     price_eur = ''
     post_id = ''
     if post.find('a', attrs= {'class':'link'}): 
-        link = "https://www.njuskalo.hr/" + post.find('a', attrs= {'class':'link'})['href'].encode('utf-8')
+        link = "https://www.njuskalo.hr" + post.find('a', attrs= {'class':'link'})['href'].encode('utf-8')
         post_id = post.find('a', attrs= {'class':'link'})['href'].encode('utf-8').split('/')[2].split('-')[-1]
     if  post.find('a', attrs= {'class':'link'}):    
         title = post.find('a', attrs= {'class':'link'}).text.encode('utf-8') 
