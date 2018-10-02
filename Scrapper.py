@@ -11,11 +11,11 @@ from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 
 
-EMAILS = ['viskofrina@gmail.com', 'eduard.edi.jerkovic@gmail.com', 'housebatarello.booking@gmail.com']
+EMAILS = [] # Your emails. Example: ["example1@sada.com", "example2@sadasdas.com"]
 POSTS = []
 FILE = open('log.txt', 'r+')
-username_email = 'lala75614@gmail.com'
-password = 'suchno1234'
+username_email = '' # Your email email. Just create a random on gmail.
+password = '' # password
 class Post:
 
    def __init__(self, link="", title="", description_main='', published_date='', price_eur='', price_hrk='', post_id = ""):
