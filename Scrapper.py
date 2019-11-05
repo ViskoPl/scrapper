@@ -13,15 +13,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import COMMASPACE, formatdate
 
-
-EMAILS = ["gledamdesno@gmail.com", "viskofrina@gmail.com", "eduard.edi.jerkovic@gmail.com"] # Your emails. Example: ["example1@sada.com", "example2@sadasdas.com"]
 POSTS = []
 FILE = open('log.txt', 'r+')
-username_email = "lala75614@gmail.com" # Your email email. Just create a random on gmail.
-password = "suchno1234" # password
 connection = httplib.HTTPSConnection("discordapp.com")
 URL = "https://discordapp.com/api/webhooks/608477939725500416/rFRsG7n3eTHY5Ub7GDoSz02P3dvBWOwYdRjxVDIyl8DwJiAUNDhdbNB8-1FrNfTYeZZq"
-  
+
+
 class Post:
 
     def __init__(self, link="", title="", description_main='', published_date='', price_eur='', price_hrk='',
@@ -36,9 +33,11 @@ class Post:
 
     def __str__(self):
         return "Link: {}  Title: {}  | Description {} | Cijena_kune: {} id: {} \n".format(self.link.encode("utf-8"), self.title.encode("utf-8"),
-                                                                                   self.description_main.encode("utf-8"),
-                                                                                   self.price_hrk.encode("utf-8"),
-                                                                                   self.post_id.encode("utf-8"))
+                                                                                          self.description_main.encode(
+                                                                                              "utf-8"),
+                                                                                          self.price_hrk.encode(
+                                                                                              "utf-8"),
+                                                                                          self.post_id.encode("utf-8"))
 
 
 def createRequest(url):
@@ -68,7 +67,8 @@ def fill_new_posts(posts):
                 for item in ids_date):
             try:
                 with io.open('log.txt', 'a', encoding='utf8') as f:
-                    f.write(new_post.post_id + '-' + new_post.published_date + '| title:' + new_post.title + '\n')
+                    f.write(new_post.post_id + '-' + new_post.published_date +
+                            '| title:' + new_post.title + '\n')
 
             except Exception as e:
                 print('Something went wrong...' + str(e))
@@ -85,18 +85,23 @@ def create_post(post):
     price_eur = ''
     post_id = ''
     if post.find('a', attrs={'class': 'link'}):
-        link = "https://www.njuskalo.hr" + post.find('a', attrs={'class': 'link'})['href']
-        post_id = post.find('a', attrs={'class': 'link'})['href'].split('/')[2].split('-')[-1]
+        link = "https://www.njuskalo.hr" + \
+            post.find('a', attrs={'class': 'link'})['href']
+        post_id = post.find('a', attrs={'class': 'link'})[
+            'href'].split('/')[2].split('-')[-1]
     if post.find('a', attrs={'class': 'link'}):
         title = post.find('a', attrs={'class': 'link'}).text
     if post.find('div', attrs={'class': 'entity-description-main'}):
-        description = post.find('div', attrs={'class': 'entity-description-main'}).text.strip()
+        description = post.find(
+            'div', attrs={'class': 'entity-description-main'}).text.strip()
     if post.find('time', attrs={'class': 'date'}):
         date = post.find('time', attrs={'class': 'date'}).text
     if post.find('strong', attrs={'class': 'price price--hrk'}):
-        price_hrk = post.find('strong', attrs={'class': 'price price--hrk'}).text
+        price_hrk = post.find(
+            'strong', attrs={'class': 'price price--hrk'}).text
     if post.find('strong', attrs={'class': 'price price--eur'}):
-        price_eur = post.find('strong', attrs={'class': 'price price--eur'}).text
+        price_eur = post.find(
+            'strong', attrs={'class': 'price price--eur'}).text
 
     if date and link and title and price_hrk and post_id:
         return Post(link, title, description, date, price_eur, price_hrk, post_id)
@@ -104,13 +109,11 @@ def create_post(post):
         return None
 
 
-
-
-
 def main():
     while True:
         new_posts = []
-        url = "https://www.njuskalo.hr/iznajmljivanje-stanova?locationIds=1261%2C1262%2C1263%2C1255%2C1253&price%5Bmax%5D=600&flatBuildingType=flat-in-residential-building"  # go onto the https://njuskalo.www to get the link with your desired filters
+        # go onto the https://njuskalo.www to get the link with your desired filters
+        url = "https://www.njuskalo.hr/iznajmljivanje-stanova?locationIds=1261%2C1262%2C1263%2C1255%2C1253&price%5Bmax%5D=600&flatBuildingType=flat-in-residential-building"
         request = createRequest(url)
         page = urllib2.urlopen(request)
         print("Sending requset to the site----------------")
@@ -135,7 +138,7 @@ def main():
                 counter = 1
                 for post in new_posts:
                     text += str(post) + '\n'
-                    send( text)
+                    send(text)
                     msg.attach(MIMEText(text, "plain",  "utf-8"))
                     if counter % 10 == 0:
                         # server.sendmail(sent_from, EMAILS, msg.as_string().encode('ascii'))
@@ -152,21 +155,23 @@ def main():
                 print('Something went wrong...'+str(e))
         time.sleep(900)
 
-  
-def send( text ):
- 
-    formdata = "------:::BOUNDARY:::\r\nContent-Disposition: form-data; name=\"content\"\r\n\r\n" + text + "\r\n------:::BOUNDARY:::--"
-  
+
+def send(text):
+
+    formdata = "------:::BOUNDARY:::\r\nContent-Disposition: form-data; name=\"content\"\r\n\r\n" + \
+        text + "\r\n------:::BOUNDARY:::--"
+
     # get the response
     connection.request("POST", URL, formdata, {
-    'content-type': "multipart/form-data; boundary=----:::BOUNDARY:::",
-    'cache-control': "no-cache",
+        'content-type': "multipart/form-data; boundary=----:::BOUNDARY:::",
+        'cache-control': "no-cache",
     })
     response = connection.getresponse()
     result = response.read()
-  
+
     # return back to the calling function with the result
     return result.decode("utf-8")
+
 
 if __name__ == "__main__":
     main()
